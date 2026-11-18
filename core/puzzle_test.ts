@@ -1,11 +1,7 @@
 import { assertEquals, assertStrictEquals } from "@std/assert";
 import { isSolved, move, parsePuzzle } from "./puzzle.ts";
 
-const corridor = parsePuzzle("Corridor", [
-  "#######",
-  "#@ $ .#",
-  "#######",
-]);
+const corridor = parsePuzzle("Corridor", ["#######", "#@ $ .#", "#######"]);
 
 Deno.test("walking onto floor moves the player and counts a move", () => {
   const after = move(corridor, "right");
@@ -21,6 +17,12 @@ Deno.test("walking into a crate pushes it one tile", () => {
   const after = move(move(corridor, "right"), "right");
   assertEquals(after.player, { x: 3, y: 1 });
   assertEquals(after.crates, [{ x: 4, y: 1 }]);
+});
+
+Deno.test("only moves that push a crate count as pushes", () => {
+  const after = move(move(corridor, "right"), "right");
+  assertEquals(after.moves, 2);
+  assertEquals(after.pushes, 1);
 });
 
 Deno.test("a crate cannot be pushed into a wall", () => {
